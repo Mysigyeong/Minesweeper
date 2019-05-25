@@ -5,8 +5,15 @@ import javax.swing.*;
 
 public class GameFrame extends JFrame {	
 	private JButton[][] button;
+	private int sizeX;
+	private int sizeY;
+	private int numOfMine;
 	
-	public GameFrame(int x, int y) {
+	public GameFrame(int x, int y, int mine) {
+		sizeX = x;
+		sizeY = y;
+		numOfMine = mine;
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		makeFrame();
@@ -86,21 +93,34 @@ public class GameFrame extends JFrame {
 	private void makeBoard(int x, int y) {
 		GridBagConstraints c = new GridBagConstraints();
 		GridBagLayout grid = new GridBagLayout();
+		GridBagLayout grid2 = new GridBagLayout();
 		
 		JPanel mp = new JPanel();
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
+		JPanel p3 = new JPanel();
+		
 		mp.setLayout(grid);
 		
-		p1.setLayout(new GridLayout(1, 3, 90, 10));
+		p1.setLayout(new BorderLayout());
 		p2.setLayout(new GridLayout(x, y));
+		p3.setLayout(grid2);
 		
 		c.fill = GridBagConstraints.BOTH;
 		c.insets = new Insets(5, 5, 5, 5);
 		
-		p1.add(new JButton("1"));
-		p1.add(new JButton("2"));
-		p1.add(new JButton("3"));
+		JButton bLeft = new JButton("1");
+		JButton resetButton = new JButton("2");
+		JButton bRight = new JButton("3");
+		bLeft.setPreferredSize(new Dimension(50, 30));
+		resetButton.setPreferredSize(new Dimension(30, 30));
+		bRight.setPreferredSize(new Dimension(50, 30));
+		
+		p3.add(resetButton);
+		
+		p1.add("West", bLeft);
+		p1.add("Center", p3);
+		p1.add("East", bRight);
 		
 		addCom(mp, c, grid, p1, 0, 0, 1, 1);
 		

@@ -58,7 +58,39 @@ public class CustomFrame extends JFrame {
 			String command = e.getActionCommand();
 			
 			if (command.equals("setting")) {
+				int x = 0;
+				int y = 0;
+				int mine = 0;
 				
+				try {
+					x = Integer.parseInt(t1.getText());
+					y = Integer.parseInt(t2.getText());
+					mine = Integer.parseInt(t3.getText());
+				}
+				catch (NumberFormatException ex) {
+					dispose();
+				}
+				
+				if (x > 30) {
+					x = 30;
+				}
+				else if (x < 9) {
+					x = 9;
+				}
+				
+				if (y > 24) {
+					y = 24;
+				}
+				else if (x < 9) {
+					y = 9;
+				}
+				
+				if (mine < 10) {
+					mine = 10;
+				}
+				else if (mine > 667) {
+					mine = 667;
+				}
 			}
 			else if (command.equals("close")) {
 				dispose();

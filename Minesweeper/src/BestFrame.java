@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class BestFrame extends JFrame {
+	private JLabel[] l;
+	
 	public BestFrame() {
 		makeFrame();
 		
@@ -20,7 +22,7 @@ public class BestFrame extends JFrame {
 		p.setLayout(new GridLayout(5, 3));
 		
 		String[] str = new String[12];
-		JLabel[] l = new JLabel[9];
+		l = new JLabel[9];
 		
 		try {
 			File file = new File("data/best.txt");
@@ -74,12 +76,12 @@ public class BestFrame extends JFrame {
 	private class ButtonClickListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
+			String[] str = new String[12];
 			
 			if (command.equals("delete")) {
 				try {
 					File file = new File("data/best.txt");
 					Scanner scn = new Scanner(file);
-					String[] str = new String[12];
 					
 					for (int i = 0; i < 12; i++) {
 						str[i] = scn.nextLine();
@@ -105,6 +107,12 @@ public class BestFrame extends JFrame {
 				}
 				catch (IOException ex2) {
 					System.exit(1);
+				}
+				
+				for (int i = 0; i < 3; i++) {
+					l[3 * i].setText(str[4 * i]);
+					l[3 * i + 1].setText(str[4 * i + 1]);
+					l[3 * i + 2].setText(str[4 * i + 2] + str[4 * i + 3]);
 				}
 			}
 		}
