@@ -1,20 +1,21 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.*;
 
 public class GameFrame extends JFrame {	
 	private JButton[][] button;
-	private int sizeX;
-	private int sizeY;
-	private int numOfMine;
+	private CustomFrame cf;
+	private ButtonClickListener bcl;
 	
 	public GameFrame(int x, int y, int mine) {
-		sizeX = x;
-		sizeY = y;
-		numOfMine = mine;
-		
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		bcl = new ButtonClickListener();
 		
 		makeFrame();
 		makeMenuBar();
@@ -71,24 +72,24 @@ public class GameFrame extends JFrame {
 	}
 	private void menuBarMouseAction(JMenuItem[] item) {
 		item[0].setActionCommand("reset");
-		item[0].addActionListener(new ButtonClickListener());
+		item[0].addActionListener(bcl);
 		item[1].setActionCommand("beginner");
-		item[1].addActionListener(new ButtonClickListener());
+		item[1].addActionListener(bcl);
 		item[2].setActionCommand("intermediate");
-		item[2].addActionListener(new ButtonClickListener());
+		item[2].addActionListener(bcl);
 		item[3].setActionCommand("expert");
-		item[3].addActionListener(new ButtonClickListener());
+		item[3].addActionListener(bcl);
 		item[4].setActionCommand("custom");
-		item[4].addActionListener(new ButtonClickListener());
+		item[4].addActionListener(bcl);
 		item[5].setActionCommand("sound");
-		item[5].addActionListener(new ButtonClickListener());
+		item[5].addActionListener(bcl);
 		item[6].setActionCommand("best");
-		item[6].addActionListener(new ButtonClickListener());
+		item[6].addActionListener(bcl);
 		
 		item[7].setActionCommand("how");
-		item[7].addActionListener(new ButtonClickListener());
+		item[7].addActionListener(bcl);
 		item[8].setActionCommand("maker");
-		item[8].addActionListener(new ButtonClickListener());
+		item[8].addActionListener(bcl);
 	}
 	private void makeBoard(int x, int y) {
 		GridBagConstraints c = new GridBagConstraints();
@@ -103,19 +104,21 @@ public class GameFrame extends JFrame {
 		mp.setLayout(grid);
 		
 		p1.setLayout(new BorderLayout());
-		p2.setLayout(new GridLayout(x, y));
+		p2.setLayout(new GridLayout(y, x));
 		p3.setLayout(grid2);
 		
 		c.fill = GridBagConstraints.BOTH;
 		c.insets = new Insets(5, 5, 5, 5);
 		
 		JButton bLeft = new JButton("1");
-		JButton resetButton = new JButton("2");
+		JButton resetButton = new JButton(new ImageIcon("data/yes.png"));
 		JButton bRight = new JButton("3");
 		bLeft.setPreferredSize(new Dimension(50, 30));
 		resetButton.setPreferredSize(new Dimension(30, 30));
 		bRight.setPreferredSize(new Dimension(50, 30));
 		
+		resetButton.setActionCommand("reset");
+		resetButton.addActionListener(bcl);
 		p3.add(resetButton);
 		
 		p1.add("West", bLeft);
@@ -124,9 +127,9 @@ public class GameFrame extends JFrame {
 		
 		addCom(mp, c, grid, p1, 0, 0, 1, 1);
 		
-		button = new JButton[x][y];
-		for (int i = 0; i < x; i++) {
-			for (int j = 0; j < y; j++) {
+		button = new JButton[y][x];
+		for (int i = 0; i < y; i++) {
+			for (int j = 0; j < x; j++) {
 				button[i][j] = new JButton();
 				button[i][j].setPreferredSize(new Dimension(20, 20));
 				p2.add(button[i][j]);
@@ -153,19 +156,68 @@ public class GameFrame extends JFrame {
 			String command = e.getActionCommand();
 			
 			if (command.equals("reset")) {
-				
+				dispose();
 			}
 			else if (command.equals("beginner")) {
+				try {
+					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
+					
+					out.write("9");
+					out.newLine();
+					out.write("9");
+					out.newLine();
+					out.write("10");
+					out.newLine();
+					
+					out.close();
+				}
+				catch (IOException ex) {
+					System.exit(1);
+				}
 				
+				dispose();
 			}
 			else if (command.equals("intermediate")) {
+				try {
+					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
+					
+					out.write("16");
+					out.newLine();
+					out.write("16");
+					out.newLine();
+					out.write("40");
+					out.newLine();
+					
+					out.close();
+				}
+				catch (IOException ex) {
+					System.exit(1);
+				}
 				
+				dispose();
 			}
 			else if (command.equals("expert")) {
+				try {
+					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
+					
+					out.write("30");
+					out.newLine();
+					out.write("16");
+					out.newLine();
+					out.write("99");
+					out.newLine();
+					
+					out.close();
+				}
+				catch (IOException ex) {
+					System.exit(1);
+				}
 				
+				dispose();
 			}
 			else if (command.equals("custom")) {
-				new CustomFrame();
+				cf = new CustomFrame();
+				cf.addWindowListener(new WinEvent());
 			}
 			else if (command.equals("sound")) {
 				
@@ -179,6 +231,65 @@ public class GameFrame extends JFrame {
 			else if (command.equals("maker")) {
 				new InfoFrame();
 			}
+		}
+	}
+	
+	private class WinEvent implements WindowListener {
+		@Override
+		public void windowClosed(WindowEvent e) {
+			if (cf.getX() != -1) {
+				try {
+					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
+					
+					out.write(Integer.toString(cf.getX()));
+					out.newLine();
+					out.write(Integer.toString(cf.getY()));
+					out.newLine();
+					out.write(Integer.toString(cf.getMine()));
+					out.newLine();
+					
+					out.close();
+				}
+				catch (IOException ex) {
+					System.exit(1);
+				}
+			}
+			dispose();
+		}
+
+		@Override
+		public void windowActivated(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			dispose();
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 }

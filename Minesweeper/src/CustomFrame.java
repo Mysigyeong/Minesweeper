@@ -7,6 +7,9 @@ public class CustomFrame extends JFrame {
 	private JTextField t1;
 	private JTextField t2;
 	private JTextField t3;
+	private int x = -1;
+	private int y = -1;
+	private int numOfMine = -1;
 	
 	public CustomFrame() {
 		makeFrame();
@@ -58,43 +61,61 @@ public class CustomFrame extends JFrame {
 			String command = e.getActionCommand();
 			
 			if (command.equals("setting")) {
-				int x = 0;
-				int y = 0;
-				int mine = 0;
+				int tempX = 0;
+				int tempY = 0;
+				int tempMine = 0;
 				
 				try {
-					x = Integer.parseInt(t1.getText());
-					y = Integer.parseInt(t2.getText());
-					mine = Integer.parseInt(t3.getText());
+					tempX = Integer.parseInt(t1.getText());
+					tempY = Integer.parseInt(t2.getText());
+					tempMine = Integer.parseInt(t3.getText());
 				}
 				catch (NumberFormatException ex) {
 					dispose();
 				}
 				
-				if (x > 30) {
-					x = 30;
+				if (tempX > 30) {
+					tempX = 30;
 				}
-				else if (x < 9) {
-					x = 9;
-				}
-				
-				if (y > 24) {
-					y = 24;
-				}
-				else if (x < 9) {
-					y = 9;
+				else if (tempX < 9) {
+					tempX = 9;
 				}
 				
-				if (mine < 10) {
-					mine = 10;
+				if (tempY > 24) {
+					tempY = 24;
 				}
-				else if (mine > 667) {
-					mine = 667;
+				else if (tempY < 9) {
+					tempY = 9;
 				}
+				
+				if (tempMine < 10) {
+					tempMine = 10;
+				}
+				else if (tempMine > 667) {
+					tempMine = 667;
+				}
+				
+				x = tempX;
+				y = tempY;
+				numOfMine = tempMine;
+				
+				dispose();
 			}
 			else if (command.equals("close")) {
 				dispose();
 			}
 		}
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public int getMine() {
+		return numOfMine;
 	}
 }

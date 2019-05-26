@@ -12,11 +12,11 @@ public class InfoFrame extends JFrame {
 		
 		JLabel l1 = new JLabel("안우솔");
 		l1.setHorizontalAlignment(JLabel.CENTER);
-		JLabel l2 = new JLabel("이런거 함");
+		JLabel l2 = new JLabel("지뢰찾기 판 구현");
 		l2.setHorizontalAlignment(JLabel.CENTER);
 		JLabel l3 = new JLabel("우병수");
 		l3.setHorizontalAlignment(JLabel.CENTER);
-		JLabel l4 = new JLabel("저런거 함");
+		JLabel l4 = new JLabel("지뢰찾기 메뉴바 구현");
 		l4.setHorizontalAlignment(JLabel.CENTER);
 		
 		p.add(l1);
