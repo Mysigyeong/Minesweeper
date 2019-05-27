@@ -1,7 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class HowToPlayFrame extends JFrame {
+public class HowToPlayFrame extends JFrame { //게임방법 프레임
 	public HowToPlayFrame() {
 		makeFrame();
 		

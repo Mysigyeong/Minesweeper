@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import javax.swing.*;
 
-public class GameFrame extends JFrame {	
+public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private JButton[][] button;
 	private CustomFrame cf;
 	private ButtonClickListener bcl;
@@ -27,12 +27,12 @@ public class GameFrame extends JFrame {
 	}
 	private void makeFrame() {
 		Toolkit kit = Toolkit.getDefaultToolkit();
-		Image img = kit.getImage("data/icon.jpg");
+		Image img = kit.getImage("data/icon.jpg"); //프레임 상단에 아이콘 넣기
 		setIconImage(img);
 		setTitle("지뢰찾기");
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(null); //프레임의 초기위치를 화면 중앙으로 한다.
 	}
-	private void makeMenuBar() {
+	private void makeMenuBar() { //메뉴바 만들기
 		JMenuBar mb = new JMenuBar();
 		
 		JMenuItem[] item = new JMenuItem[9];
@@ -70,7 +70,7 @@ public class GameFrame extends JFrame {
 		mb.add(new JMenu("온라인"));
 		setJMenuBar(mb);
 	}
-	private void menuBarMouseAction(JMenuItem[] item) {
+	private void menuBarMouseAction(JMenuItem[] item) { //메뉴바의 각 버튼에 커맨드 입력
 		item[0].setActionCommand("reset");
 		item[0].addActionListener(bcl);
 		item[1].setActionCommand("beginner");
@@ -107,8 +107,8 @@ public class GameFrame extends JFrame {
 		p2.setLayout(new GridLayout(y, x));
 		p3.setLayout(grid2);
 		
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(5, 5, 5, 5);
+		c.fill = GridBagConstraints.BOTH; //그리드백레이아웃 크기가 맞지 않을 경우 가로세로 확장
+		c.insets = new Insets(5, 5, 5, 5); //그리드백레이아웃 격자 간격조정
 		
 		JButton bLeft = new JButton("1");
 		JButton resetButton = new JButton(new ImageIcon("data/yes.png"));
@@ -131,7 +131,7 @@ public class GameFrame extends JFrame {
 		for (int i = 0; i < y; i++) {
 			for (int j = 0; j < x; j++) {
 				button[i][j] = new JButton();
-				button[i][j].setPreferredSize(new Dimension(20, 20));
+				button[i][j].setPreferredSize(new Dimension(20, 20)); //지뢰 판 위의 버튼 크기 설정
 				p2.add(button[i][j]);
 			}
 		}
@@ -142,7 +142,7 @@ public class GameFrame extends JFrame {
 		
 		con.add(mp);
 	}
-	private void addCom(JPanel mp, GridBagConstraints c, GridBagLayout grid, Component com, int x, int y, int w, int h) {
+	private void addCom(JPanel mp, GridBagConstraints c, GridBagLayout grid, Component com, int x, int y, int w, int h) { //그리드백레이아웃 관련 함수
 		c.gridx = x;
 		c.gridy = y;
 		c.gridwidth = w;
@@ -217,7 +217,7 @@ public class GameFrame extends JFrame {
 			}
 			else if (command.equals("custom")) {
 				cf = new CustomFrame();
-				cf.addWindowListener(new WinEvent());
+				cf.addWindowListener(new WinEvent()); //사용자지정 프레임이 닫힐 때 이벤트 설정
 			}
 			else if (command.equals("sound")) {
 				
@@ -236,7 +236,7 @@ public class GameFrame extends JFrame {
 	
 	private class WinEvent implements WindowListener {
 		@Override
-		public void windowClosed(WindowEvent e) {
+		public void windowClosed(WindowEvent e) { //창이 닫혔을 때
 			if (cf.getX() != -1) {
 				try {
 					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
@@ -259,37 +259,32 @@ public class GameFrame extends JFrame {
 
 		@Override
 		public void windowActivated(WindowEvent e) {
-			// TODO Auto-generated method stub
-			
+			// 내용 없음
 		}
 
 		@Override
-		public void windowClosing(WindowEvent e) {
+		public void windowClosing(WindowEvent e) { //창닫기 버튼을 눌렀을 때
 			dispose();
 		}
 
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			// TODO Auto-generated method stub
-			
+			// 내용 없음
 		}
 
 		@Override
 		public void windowDeiconified(WindowEvent e) {
-			// TODO Auto-generated method stub
-			
+			// 내용 없음
 		}
 
 		@Override
 		public void windowIconified(WindowEvent e) {
-			// TODO Auto-generated method stub
-			
+			// 내용 없음
 		}
 
 		@Override
 		public void windowOpened(WindowEvent e) {
-			// TODO Auto-generated method stub
-			
+			// 내용 없음
 		}
 	}
 }

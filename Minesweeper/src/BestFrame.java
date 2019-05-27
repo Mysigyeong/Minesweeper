@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class BestFrame extends JFrame {
+public class BestFrame extends JFrame { //최고기록 프레임
 	private JLabel[] l;
 	
 	public BestFrame() {
@@ -25,7 +25,7 @@ public class BestFrame extends JFrame {
 		l = new JLabel[9];
 		
 		try {
-			File file = new File("data/best.txt");
+			File file = new File("data/best.txt");    //저장되어있는 기록들 불러오기
 			Scanner scn = new Scanner(file);
 			
 			for (int i = 0; i < 12; i++) {
@@ -67,10 +67,10 @@ public class BestFrame extends JFrame {
 	}
 	private void makeFrame() {
 		Toolkit kit = Toolkit.getDefaultToolkit();
-		Image img = kit.getImage("data/icon.jpg");
+		Image img = kit.getImage("data/icon.jpg"); //프레임창에 아이콘 넣기
 		setIconImage(img);
 		setTitle("최고기록");
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(null); //화면 중앙에 띄우기
 	}
 	
 	private class ButtonClickListener implements ActionListener {
@@ -78,7 +78,7 @@ public class BestFrame extends JFrame {
 			String command = e.getActionCommand();
 			String[] str = new String[12];
 			
-			if (command.equals("delete")) {
+			if (command.equals("delete")) { //기록들 다시 초기화시키는 작업
 				try {
 					File file = new File("data/best.txt");
 					Scanner scn = new Scanner(file);

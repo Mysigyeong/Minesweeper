@@ -3,7 +3,7 @@ import javax.swing.*;
 
 import javax.swing.JFrame;
 
-public class InfoFrame extends JFrame {
+public class InfoFrame extends JFrame { //만든이 프레임
 	public InfoFrame() {
 		makeFrame();
 		

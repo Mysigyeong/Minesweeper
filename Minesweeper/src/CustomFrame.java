@@ -3,7 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class CustomFrame extends JFrame {
+public class CustomFrame extends JFrame { //사용자지정 프레임
 	private JTextField t1;
 	private JTextField t2;
 	private JTextField t3;
@@ -60,7 +60,7 @@ public class CustomFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
 			
-			if (command.equals("setting")) {
+			if (command.equals("setting")) { //설정버튼 눌렀을 때
 				int tempX = 0;
 				int tempY = 0;
 				int tempMine = 0;
@@ -70,11 +70,11 @@ public class CustomFrame extends JFrame {
 					tempY = Integer.parseInt(t2.getText());
 					tempMine = Integer.parseInt(t3.getText());
 				}
-				catch (NumberFormatException ex) {
+				catch (NumberFormatException ex) { //수가 아닌 문자가 들어왔을 경우 그냥 창을 닫는다.
 					dispose();
 				}
 				
-				if (tempX > 30) {
+				if (tempX > 30) { //가로값은 9~30, 세로값은 9~24, 지뢰개수는 10~667 범위 초과하면 최대 또는 최솟값을 입력한다.
 					tempX = 30;
 				}
 				else if (tempX < 9) {
