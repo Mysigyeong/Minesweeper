@@ -132,6 +132,13 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			for (int j = 0; j < x; j++) {
 				button[i][j] = new JButton();
 				button[i][j].setPreferredSize(new Dimension(20, 20)); //지뢰 판 위의 버튼 크기 설정
+				JButton b = button[i][j];
+				b.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						b.setEnabled(false);
+						b.setVisible(false);
+					}
+				});
 				p2.add(button[i][j]);
 			}
 		}
