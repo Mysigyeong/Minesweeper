@@ -6,6 +6,7 @@ import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.swing.*;
 
@@ -13,10 +14,12 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private JButton[][] button;
 	private CustomFrame cf;
 	private ButtonClickListener bcl;
+	private int[][] xy;
 	
 	public GameFrame(int x, int y, int mine) {
 		bcl = new ButtonClickListener();
 		
+		makeMap(x,y,mine);
 		makeFrame();
 		makeMenuBar();
 		makeBoard(x, y);
@@ -138,10 +141,13 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		addCom(mp, c, grid, p1, 0, 0, 1, 1);
 		
 		button = new JButton[y][x];
+		ImageIcon icon;
+		ImagePanel ipanel;
+		
 		for (int i = 0; i < y; i++) {
 			for (int j = 0; j < x; j++) {
 				button[i][j] = new JButton();
-				button[i][j].setPreferredSize(new Dimension(20, 20)); //지뢰 판 위의 버튼 크기 설정
+//				button[i][j].setPreferredSize(new Dimension(20, 20)); //지뢰 판 위의 버튼 크기 설정
 				JButton b = button[i][j];
 				b.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -149,7 +155,14 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 						b.setVisible(false);
 					}
 				});
-				p2.add(button[i][j]);
+				
+//				icon=new ImageIcon("data/1.png");
+				icon=new ImageIcon("data/"+Integer.toString(xy[i][j])+".png");
+				ipanel=new ImagePanel(icon.getImage());
+				ipanel.setPreferredSize(new Dimension(20,20));
+				ipanel.setLayout(new GridLayout(1,1));
+//				ipanel.add(button[i][j]);
+				p2.add(ipanel);
 			}
 		}
 		
@@ -303,5 +316,56 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		public void windowOpened(WindowEvent e) {
 			// 내용 없음
 		}
+	}
+	private void makeMap(int col, int row, int mineCnt)
+	{
+		//initializing
+		xy=new int[row][col];
+		for(int i=0 ; i<row ; i++)
+		{
+			for(int j=0 ; j<col ; j++) xy[i][j]=0;
+		}
+		//shuffle
+		int[][] lst=new int[row*col][2];
+		Random rand=new Random();
+		int cnt=0;
+		for(int i=0 ; i<row ; i++)
+		{
+			for(int j=0 ; j<col ; j++)
+			{
+				lst[cnt][0]=i;
+				lst[cnt][1]=j;
+				cnt++;
+			}
+		}
+		for(int i=0 ; i<row*col ; i++)
+		{
+			int idx=rand.nextInt(row*col);
+			int tmp=lst[i][0];
+			lst[i][0]=lst[idx][0];
+			lst[idx][0]=tmp;
+			tmp=lst[i][1];
+			lst[i][1]=lst[idx][1];
+			lst[idx][1]=tmp;
+		}
+		for(int i=0 ; i<mineCnt ; i++)
+		{
+			xy[lst[i][0]][lst[i][1]]=-1;
+		}
+		//setting map
+		int[] dy={-1,-1,-1,0,1,1,1,0};
+		int[] dx={-1,0,1,1,1,0,-1,-1};
+		for(int y=0 ; y<row ; y++)
+		{
+			for(int x=0 ; x<col ; x++)
+			{
+				if(xy[y][x]==-1) continue;
+				for(int i=0 ; i<8 ; i++)
+				{
+					if(y+dy[i]<0 || y+dy[i]>=row || x+dx[i]<0 || x+dx[i]>=col) continue;
+					if(xy[y+dy[i]][x+dx[i]]==-1) xy[y][x]++;
+				}
+			}
+		}		
 	}
 }
