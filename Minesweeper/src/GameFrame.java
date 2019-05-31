@@ -112,10 +112,20 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		JButton bLeft = new JButton("1");
 		JButton resetButton = new JButton(new ImageIcon("data/yes.png"));
-		JButton bRight = new JButton("3");
+		
+		StopWatch stopwatch=new StopWatch();
+		TimeLabel tl=new TimeLabel(stopwatch);
+		stopwatch.On();
+		stopwatch.start();
+		tl.start();
+		JLabel time=tl.label;
+		Font f1=new Font("돋움", Font.BOLD, 15);
+		time.setFont(f1);
+
 		bLeft.setPreferredSize(new Dimension(50, 30));
 		resetButton.setPreferredSize(new Dimension(30, 30));
-		bRight.setPreferredSize(new Dimension(50, 30));
+		time.setPreferredSize(new Dimension(50,30));
+		time.setHorizontalAlignment(JLabel.RIGHT);
 		
 		resetButton.setActionCommand("reset");
 		resetButton.addActionListener(bcl);
@@ -123,7 +133,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		p1.add("West", bLeft);
 		p1.add("Center", p3);
-		p1.add("East", bRight);
+		p1.add("East",time);
 		
 		addCom(mp, c, grid, p1, 0, 0, 1, 1);
 		
