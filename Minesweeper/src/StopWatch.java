@@ -10,14 +10,19 @@ public class StopWatch implements Runnable
 		sec=0;
 	}
 	public void On() { isOn=true;}
+	public void Off() { isOn=false;}
 	public boolean checkOn() {return isOn;}
 	public int getSec() {return sec;}
 	public void run()
 	{
 		try
 		{
-			curTime=System.currentTimeMillis();
-			nxtTime=curTime+1000;
+			while(!isOn)
+			{
+				curTime=System.currentTimeMillis();
+				nxtTime=curTime+1000;
+				Thread.sleep(50);
+			}
 			while(isOn)
 			{
 				Thread.sleep(100);

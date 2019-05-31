@@ -15,9 +15,18 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private CustomFrame cf;
 	private ButtonClickListener bcl;
 	private int[][] xy;
+	private JButton resetButton;
+	private int clickedCnt, mineCnt;
+	private StopWatch stopwatch;
+	private TimeLabel tl;
+	private boolean[][] check;
 	
 	public GameFrame(int x, int y, int mine) {
 		bcl = new ButtonClickListener();
+		clickedCnt=0;
+		check=new boolean[y][x];
+		mineCnt=mine;
+		for(int i=0 ; i<y ; i++) for(int j=0 ; j<x ; j++) check[i][j]=false;
 		
 		makeMap(x,y,mine);
 		makeFrame();
@@ -114,11 +123,11 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		c.insets = new Insets(5, 5, 5, 5); //그리드백레이아웃 격자 간격조정
 		
 		JButton bLeft = new JButton("1");
-		JButton resetButton = new JButton(new ImageIcon("data/yes.png"));
+		resetButton = new JButton(new ImageIcon("data/yes.png"));
 		
-		StopWatch stopwatch=new StopWatch();
-		TimeLabel tl=new TimeLabel(stopwatch);
-		stopwatch.On();
+		stopwatch=new StopWatch();
+		tl=new TimeLabel(stopwatch);
+//		stopwatch.On();
 		stopwatch.start();
 		tl.start();
 		JLabel time=tl.label;
@@ -147,21 +156,22 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		for (int i = 0; i < y; i++) {
 			for (int j = 0; j < x; j++) {
 				button[i][j] = new JButton();
-//				button[i][j].setPreferredSize(new Dimension(20, 20)); //지뢰 판 위의 버튼 크기 설정
 				JButton b = button[i][j];
 				b.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+//						System.out.println(b.getY()+" "+b.getX());
+						checkMine(e.getSource(),y,x);
 						b.setEnabled(false);
 						b.setVisible(false);
 					}
 				});
 				
-//				icon=new ImageIcon("data/1.png");
 				icon=new ImageIcon("data/"+Integer.toString(xy[i][j])+".png");
 				ipanel=new ImagePanel(icon.getImage());
 				ipanel.setPreferredSize(new Dimension(20,20));
 				ipanel.setLayout(new GridLayout(1,1));
-//				ipanel.add(button[i][j]);
+//				button[i][j].setPreferredSize(new Dimension(20,20));
+				ipanel.add(button[i][j]);
 				p2.add(ipanel);
 			}
 		}
@@ -367,5 +377,87 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 				}
 			}
 		}		
+	}
+	private void checkMine(Object o, int row, int col)
+	{
+		int y=-1, x=-1;
+		clickedCnt++;
+		if(clickedCnt==1) stopwatch.On();
+		for(int i=0 ; i<row ; i++)
+		{
+			for(int j=0 ; j<col ; j++)
+			{
+				if(o.equals(button[i][j]))
+				{
+					y=i; x=j;
+					break;
+				}
+			}
+			if(y!=-1) break;
+		}
+		if(xy[y][x]==-1)
+		{
+			resetButton.setIcon(new ImageIcon("data/no.png"));
+			for(int i=0 ; i<row ; i++)
+			{
+				for(int j=0 ; j<col ; j++)
+				{
+					button[i][j].setEnabled(false);
+					if(xy[i][j]!=-1) continue;
+					button[i][j].setVisible(false);
+				}
+			}
+			stopwatch.Off();
+			return;
+		}
+		int[][] queue=new int[row*col+5][2];
+		int f=-1, r=0;
+		queue[0][0]=y; queue[0][1]=x;
+		check[y][x]=true;
+		int[] dy={-1,-1,-1,0,1,1,1,0};
+		int[] dx={-1,0,1,1,1,0,-1,-1};
+		if(xy[y][x]==0)
+		{
+			do
+			{
+				clickedCnt++;
+				f++;
+				int i=queue[f][0];
+				int j=queue[f][1];
+				button[i][j].setEnabled(false);
+				button[i][j].setVisible(false);
+				if(xy[i][j]==0)
+				{
+					for(int k=0 ; k<8 ; k++)
+					{
+						if(i+dy[k]<0 || i+dy[k]>=row || j+dx[k]<0 || j+dx[k]>=col) continue;
+						if(check[i+dy[k]][j+dx[k]]==true) continue;
+						r++;
+						queue[r][0]=i+dy[k];
+						queue[r][1]=j+dx[k];
+						check[i+dy[k]][j+dx[k]]=true;
+					}
+				}
+			}while(f<r);
+			clickedCnt--;
+		}
+		//game clear
+		if(row*col-clickedCnt==mineCnt)
+		{
+			resetButton.setIcon(new ImageIcon("data/yeah.png"));
+			stopwatch.Off();
+			for(int i=0 ; i<row ; i++)
+			{
+				for(int j=0 ; j<col ; j++)
+				{
+					if(xy[i][j]==-1)
+					{
+						button[i][j].setIcon(new ImageIcon("data/flag.png"));
+						button[i][j].setDisabledIcon(new ImageIcon("data/flag.png"));
+						button[i][j].setEnabled(false);
+					}
+				}
+			}
+		}
 	}
 }

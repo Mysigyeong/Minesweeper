@@ -14,6 +14,11 @@ public class TimeLabel implements Runnable
 	{
 		try
 		{
+			while(!sw.checkOn())
+			{
+				label.setText("0√ ");
+				Thread.sleep(50);
+			}
 			while(sw.checkOn()==true)
 			{
 				int t=sw.getSec();
