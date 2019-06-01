@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import javax.swing.*;
 
 public class GameFrame extends JFrame {	//게임을 하는 메인프레임
@@ -30,6 +34,9 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private final int x;
 	private final int y;
 	private final int difficulty;
+	
+	private AudioInputStream ais;
+	private Clip clip;
 	private boolean soundEnable;
 	
 	public GameFrame(int x, int y, int mine, int di, int sound) {
@@ -41,6 +48,15 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		this.x = x;
 		this.y = y;
 		difficulty = di;
+		
+		try {
+			ais = AudioSystem.getAudioInputStream(new File("data/lose.wav"));
+			clip = AudioSystem.getClip();
+			clip.open(ais);
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		
 		if (sound == 1) {
 			soundEnable = true;
@@ -209,7 +225,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		JButton bLeft = new JButton("1");
 		resetButton = new JButton(new ImageIcon("data/yes.png"));
 		
-		stopwatch = new StopWatch();
+		stopwatch = new StopWatch(soundEnable);
 		tl = new TimeLabel(stopwatch);
 		stopwatch.start();
 		tl.start();
@@ -297,6 +313,19 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		if(xy[y][x] == -1) {
 			resetButton.setIcon(new ImageIcon("data/no.png"));
+			
+			if (soundEnable) {
+				try {
+					ais = AudioSystem.getAudioInputStream(new File("data/lose.wav"));
+					clip = AudioSystem.getClip();
+					clip.open(ais);
+					clip.start();
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+			
 			for(int i = 0; i < this.y; i++) {
 				for(int j = 0; j < this.x; j++) {
 					button[i][j].setEnabled(false);
@@ -364,6 +393,18 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		if(this.y * this.x - clickedCnt == mineCnt) {
 			resetButton.setIcon(new ImageIcon("data/yeah.png"));
 			stopwatch.Off();
+			
+			if (soundEnable) {
+				try {
+					ais = AudioSystem.getAudioInputStream(new File("data/win.wav"));
+					clip = AudioSystem.getClip();
+					clip.open(ais);
+					clip.start();
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
 			
 			for(int i = 0; i < this.y; i++) {
 				for(int j = 0; j < this.x; j++) {
@@ -437,7 +478,12 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 				catch (IOException ex) {
 					System.exit(1);
 				}
-				
+
+				if (soundEnable && clip.isRunning()) {
+					clip.stop();
+				}
+
+				stopwatch.Off();
 				dispose();
 			}
 			else if (command.equals("beginner")) {
@@ -468,6 +514,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					System.exit(1);
 				}
 				
+				stopwatch.Off();
 				dispose();
 			}
 			else if (command.equals("intermediate")) {
@@ -498,6 +545,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					System.exit(1);
 				}
 				
+				stopwatch.Off();
 				dispose();
 			}
 			else if (command.equals("expert")) {
@@ -528,6 +576,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					System.exit(1);
 				}
 				
+				stopwatch.Off();
 				dispose();
 			}
 			else if (command.equals("custom")) {
@@ -536,6 +585,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			}
 			else if (command.equals("sound")) {
 				soundEnable = !soundEnable;
+				stopwatch.setSound(soundEnable);
 			}
 			else if (command.equals("best")) {
 				new BestFrame();
@@ -580,6 +630,8 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					System.exit(1);
 				}
 			}
+			
+			stopwatch.Off();
 			dispose();
 		}
 
@@ -590,6 +642,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 
 		@Override
 		public void windowClosing(WindowEvent e) { //창닫기 버튼을 눌렀을 때
+			stopwatch.Off();
 			dispose();
 		}
 

@@ -20,6 +20,7 @@ public class TimeLabel implements Runnable {
 				int t = sw.getSec();
 				String secString = Integer.toString(t);
 				label.setText(secString + "√ ");
+				
 				Thread.sleep(50);
 			}
 		}

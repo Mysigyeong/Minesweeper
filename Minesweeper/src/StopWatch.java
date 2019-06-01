@@ -1,3 +1,9 @@
+import java.io.File;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 public class StopWatch implements Runnable
 {
 	private Thread t;
@@ -6,10 +12,13 @@ public class StopWatch implements Runnable
 	private long nxtTime;
 	public int sec;
 	
-	public StopWatch()
+	private boolean soundEnable;
+	
+	public StopWatch(boolean sound)
 	{
 		isOn = false;
 		sec = 0;
+		soundEnable = sound;
 	}
 	
 	public void On() {
@@ -41,6 +50,18 @@ public class StopWatch implements Runnable
 				if(curTime >= nxtTime) {
 					sec++;
 					nxtTime = curTime + 1000;
+					
+					if (soundEnable) {
+						try {
+							AudioInputStream ais = AudioSystem.getAudioInputStream(new File("data/clock.wav"));
+							Clip clip = AudioSystem.getClip();
+							clip.open(ais);
+							clip.start();
+						}
+						catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}
 				}
 			}
 		}
@@ -53,5 +74,9 @@ public class StopWatch implements Runnable
 			t = new Thread(this);
 			t.start();
 		}
+	}
+	
+	public void setSound(boolean sound) {
+		soundEnable = sound;
 	}
 }
