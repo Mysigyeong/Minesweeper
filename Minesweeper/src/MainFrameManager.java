@@ -11,14 +11,14 @@ public class MainFrameManager { //GameFrame(메인프레임)관리하는 클래스
 	private Scanner scn;
 	
 	public MainFrameManager() {
-		int[] num = new int[3];
+		int[] num = new int[5];
 		w = new WinEvent();
 		
 		try {
 			file = new File("data/size.txt"); //저장되어있는 사이즈값 불러와서 게임프레임을 만든다.
 			scn = new Scanner(file);
 			
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 5; i++) {
 				num[i] = Integer.parseInt(scn.nextLine());
 			}
 			
@@ -31,7 +31,7 @@ public class MainFrameManager { //GameFrame(메인프레임)관리하는 클래스
 			System.exit(1);
 		}
 		
-		frame = new GameFrame(num[0], num[1], num[2]);
+		frame = new GameFrame(num[0], num[1], num[2], num[3], num[4]);
 		frame.addWindowListener(w);                    //메인 게임창이 닫힐 때의 이벤트 추가
 	}
 	
@@ -39,13 +39,13 @@ public class MainFrameManager { //GameFrame(메인프레임)관리하는 클래스
 	private class WinEvent implements WindowListener {
 		@Override
 		public void windowClosed(WindowEvent e) {
-			int[] num = new int[3];
+			int[] num = new int[5];
 			
 			try {
 				file = new File("data/size.txt");
 				scn = new Scanner(file);
 				
-				for (int i = 0; i < 3; i++) {
+				for (int i = 0; i < 5; i++) {
 					num[i] = Integer.parseInt(scn.nextLine());
 				}
 				
@@ -58,7 +58,7 @@ public class MainFrameManager { //GameFrame(메인프레임)관리하는 클래스
 				System.exit(1);
 			}
 			
-			frame = new GameFrame(num[0], num[1], num[2]);
+			frame = new GameFrame(num[0], num[1], num[2], num[3], num[4]);
 			frame.addWindowListener(w);
 		}
 

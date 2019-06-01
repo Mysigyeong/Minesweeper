@@ -4,9 +4,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
 
 import javax.swing.*;
 
@@ -19,53 +22,68 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private int[][] xy;
 	private boolean[][] check;
 	private int clickedCnt;
-	private int mineCnt;
+	private final int mineCnt;
 	
 	private StopWatch stopwatch;
 	private TimeLabel tl;
 	
+	private final int x;
+	private final int y;
+	private final int difficulty;
+	private boolean soundEnable;
 	
-	public GameFrame(int x, int y, int mine) {
+	public GameFrame(int x, int y, int mine, int di, int sound) {
 		bcl = new ButtonClickListener();
-		clickedCnt = 0;
 		check = new boolean[y][x];
+		clickedCnt = 0;
 		mineCnt = mine;
+		
+		this.x = x;
+		this.y = y;
+		difficulty = di;
+		
+		if (sound == 1) {
+			soundEnable = true;
+		}
+		else {
+			soundEnable = false;
+		}
 		
 		for(int i = 0; i < y; i++) {
 			for(int j = 0; j < x; j++) {
-				check[i][j]=false;
+				check[i][j] = false;
 			}
 		}
 		
-		makeMap(x, y, mine);
+		makeMap();
 		makeFrame();
 		makeMenuBar();
-		makeBoard(x, y);
+		makeBoard();
 		pack();
 		setResizable(false);
 		setVisible(true);
 	}
-	private void makeMap(int col, int row, int mineCnt) {
+	private void makeMap() {
 		//initializing
-		xy = new int[row][col];
-		for(int i = 0; i < row; i++) {
-			for(int j = 0; j < col; j++) {
+		xy = new int[y][x];
+		for(int i = 0; i < y; i++) {
+			for(int j = 0; j < x; j++) {
 				xy[i][j] = 0;
 			}
 		}
 		//shuffle
-		int[][] lst = new int[row * col][2];
+		int[][] lst = new int[y * x][2];
 		Random rand = new Random();
 		int cnt = 0;
-		for(int i = 0; i < row; i++) {
-			for(int j = 0; j < col; j++) {
+		for(int i = 0; i < y; i++) {
+			for(int j = 0; j < x; j++) {
 				lst[cnt][0] = i;
 				lst[cnt][1] = j;
 				cnt++;
 			}
 		}
-		for(int i = 0; i < row * col; i++) {
-			int idx = rand.nextInt(row * col);
+		for(int i = 0; i < y * x; i++) {
+			int idx = rand.nextInt(y * x);
 			int tmp = lst[i][0];
 			lst[i][0] = lst[idx][0];
 			lst[idx][0] = tmp;
@@ -79,13 +97,13 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		//setting map
 		int[] dy = {-1, -1, -1, 0, 1, 1, 1, 0};
 		int[] dx = {-1, 0, 1, 1, 1, 0, -1, -1};
-		for(int y = 0; y < row; y++) {
-			for(int x = 0; x < col; x++) {
+		for(int y = 0; y < this.y; y++) {
+			for(int x = 0; x < this.x; x++) {
 				if(xy[y][x] == -1) {
 					continue;
 				}
 				for(int i = 0; i < 8; i++) {
-					if(y + dy[i] < 0 || y + dy[i] >= row || x + dx[i] < 0 || x + dx[i] >= col) {
+					if(y + dy[i] < 0 || y + dy[i] >= this.y || x + dx[i] < 0 || x + dx[i] >= this.x) {
 						continue;
 					}
 					if(xy[y + dy[i]][x + dx[i]] == -1) {
@@ -111,7 +129,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		item[2] = new JMenuItem("중급");
 		item[3] = new JMenuItem("고급");
 		item[4] = new JMenuItem("사용자 지정");
-		item[5] = new JCheckBoxMenuItem("소리", true);
+		item[5] = new JCheckBoxMenuItem("소리", soundEnable);
 		item[6] = new JMenuItem("최고기록");
 		
 		item[7] = new JMenuItem("게임 방법");
@@ -143,25 +161,33 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private void menuBarMouseAction(JMenuItem[] item) { //메뉴바의 각 버튼에 커맨드 입력
 		item[0].setActionCommand("reset");
 		item[0].addActionListener(bcl);
+		
 		item[1].setActionCommand("beginner");
 		item[1].addActionListener(bcl);
+		
 		item[2].setActionCommand("intermediate");
 		item[2].addActionListener(bcl);
+		
 		item[3].setActionCommand("expert");
 		item[3].addActionListener(bcl);
+		
 		item[4].setActionCommand("custom");
 		item[4].addActionListener(bcl);
+		
 		item[5].setActionCommand("sound");
 		item[5].addActionListener(bcl);
+		
 		item[6].setActionCommand("best");
 		item[6].addActionListener(bcl);
 		
+		
 		item[7].setActionCommand("how");
 		item[7].addActionListener(bcl);
+		
 		item[8].setActionCommand("maker");
 		item[8].addActionListener(bcl);
 	}
-	private void makeBoard(int x, int y) {
+	private void makeBoard() {
 		GridBagConstraints c = new GridBagConstraints();
 		GridBagLayout grid = new GridBagLayout();
 		GridBagLayout grid2 = new GridBagLayout();
@@ -217,14 +243,14 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 				b.setIcon(new ImageIcon("data/button.png"));
 				b.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						checkMine(e.getSource(),y,x);
+						checkMine(e.getSource());
 						b.setEnabled(false);
 						b.setVisible(false);
 					}
 				});
 				
-				icon=new ImageIcon("data/"+Integer.toString(xy[i][j])+".png");
-				ipanel=new ImagePanel(icon.getImage());
+				icon = new ImageIcon("data/"+Integer.toString(xy[i][j])+".png");
+				ipanel = new ImagePanel(icon.getImage());
 				ipanel.setPreferredSize(new Dimension(20,20));
 				ipanel.setLayout(new GridLayout(1,1));
 				ipanel.add(button[i][j]);
@@ -246,7 +272,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		grid.setConstraints(com, c);
 		mp.add(com);
 	}
-	private void checkMine(Object o, int row, int col)
+	private void checkMine(Object o)
 	{
 		int y = -1;
 		int x = -1;
@@ -256,8 +282,8 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			stopwatch.On();
 		}
 		
-		for(int i = 0; i < row; i++) {
-			for(int j = 0; j < col; j++) {
+		for(int i = 0; i < this.y; i++) {
+			for(int j = 0; j < this.x; j++) {
 				if(o.equals(button[i][j])) {
 					y = i;
 					x = j;
@@ -271,8 +297,8 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		if(xy[y][x] == -1) {
 			resetButton.setIcon(new ImageIcon("data/no.png"));
-			for(int i = 0; i < row; i++) {
-				for(int j = 0; j < col; j++) {
+			for(int i = 0; i < this.y; i++) {
+				for(int j = 0; j < this.x; j++) {
 					button[i][j].setEnabled(false);
 					
 					if(xy[i][j] != -1) {
@@ -289,7 +315,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			return;
 		}
 		
-		int[][] queue = new int[row * col + 5][2];
+		int[][] queue = new int[this.y * this.x + 5][2];
 		int f = -1;
 		int r = 0;
 		
@@ -314,7 +340,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 				
 				if(xy[i][j] == 0) {
 					for(int k = 0; k < 8; k++) {
-						if(i + dy[k] < 0 || i + dy[k] >= row || j + dx[k] < 0 || j + dx[k] >= col) {
+						if(i + dy[k] < 0 || i + dy[k] >= this.y || j + dx[k] < 0 || j + dx[k] >= this.x) {
 							continue;
 						}
 						
@@ -333,18 +359,48 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			
 			clickedCnt--;
 		}
+		
 		//game clear
-		if(row * col - clickedCnt == mineCnt) {
+		if(this.y * this.x - clickedCnt == mineCnt) {
 			resetButton.setIcon(new ImageIcon("data/yeah.png"));
 			stopwatch.Off();
 			
-			for(int i = 0; i < row; i++) {
-				for(int j = 0; j < col; j++) {
+			for(int i = 0; i < this.y; i++) {
+				for(int j = 0; j < this.x; j++) {
 					if(xy[i][j] == -1) {
 						button[i][j].setIcon(new ImageIcon("data/flag.png"));
 						button[i][j].setDisabledIcon(new ImageIcon("data/flag.png"));
 						button[i][j].setEnabled(false);
 					}
+				}
+			}
+			
+			if (difficulty > 0 && difficulty < 4) {
+				String[] str = new String[12];
+				int time = stopwatch.getSec();
+				
+				try {
+					File file = new File("data/best.txt");    //저장되어있는 기록들 불러오기
+					Scanner scn = new Scanner(file);
+					
+					for (int i = 0; i < 12; i++) {
+						str[i] = scn.nextLine();
+					}
+					
+					scn.close();
+				}
+				catch (FileNotFoundException e) {
+					System.exit(1);
+				}
+				
+				if (difficulty == 1 && Integer.parseInt(str[2]) > time) {
+					new GetBestNameFrame(time, difficulty);
+				}
+				else if (difficulty == 2 && Integer.parseInt(str[6]) > time) {
+					new GetBestNameFrame(time, difficulty);
+				}
+				else if (difficulty == 3 && Integer.parseInt(str[10]) > time) {
+					new GetBestNameFrame(time, difficulty);
 				}
 			}
 		}
@@ -355,6 +411,33 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			String command = e.getActionCommand();
 			
 			if (command.equals("reset")) {
+				try {
+					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
+					
+					out.write(Integer.toString(x));
+					out.newLine();
+					out.write(Integer.toString(y));
+					out.newLine();
+					out.write(Integer.toString(mineCnt));
+					out.newLine();
+					out.write(Integer.toString(difficulty));
+					out.newLine();
+					
+					if (soundEnable) {
+						out.write("1");
+						out.newLine();
+					}
+					else {
+						out.write("0");
+						out.newLine();
+					}
+					
+					out.close();
+				}
+				catch (IOException ex) {
+					System.exit(1);
+				}
+				
 				dispose();
 			}
 			else if (command.equals("beginner")) {
@@ -367,6 +450,17 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					out.newLine();
 					out.write("10");
 					out.newLine();
+					out.write("1");
+					out.newLine();
+					
+					if (soundEnable) {
+						out.write("1");
+						out.newLine();
+					}
+					else {
+						out.write("0");
+						out.newLine();
+					}
 					
 					out.close();
 				}
@@ -386,6 +480,17 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					out.newLine();
 					out.write("40");
 					out.newLine();
+					out.write("2");
+					out.newLine();
+					
+					if (soundEnable) {
+						out.write("1");
+						out.newLine();
+					}
+					else {
+						out.write("0");
+						out.newLine();
+					}
 					
 					out.close();
 				}
@@ -405,6 +510,17 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					out.newLine();
 					out.write("99");
 					out.newLine();
+					out.write("3");
+					out.newLine();
+					
+					if (soundEnable) {
+						out.write("1");
+						out.newLine();
+					}
+					else {
+						out.write("0");
+						out.newLine();
+					}
 					
 					out.close();
 				}
@@ -419,7 +535,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 				cf.addWindowListener(new WinEvent()); //사용자지정 프레임이 닫힐 때 이벤트 설정
 			}
 			else if (command.equals("sound")) {
-				
+				soundEnable = !soundEnable;
 			}
 			else if (command.equals("best")) {
 				new BestFrame();
@@ -446,6 +562,17 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					out.newLine();
 					out.write(Integer.toString(cf.getMine()));
 					out.newLine();
+					out.write("4");
+					out.newLine();
+					
+					if (soundEnable) {
+						out.write("1");
+						out.newLine();
+					}
+					else {
+						out.write("0");
+						out.newLine();
+					}
 					
 					out.close();
 				}
