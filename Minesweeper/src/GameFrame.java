@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
@@ -22,14 +24,16 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private CustomFrame cf;
 	private ButtonClickListener bcl;
 	private JButton resetButton;
+	private boolean[][] rightClicked;
 	
 	private int[][] xy;
 	private boolean[][] check;
-	private int clickedCnt;
+	private int clickedCnt, xIdx, yIdx;
 	private final int mineCnt;
 	
 	private StopWatch stopwatch;
 	private TimeLabel tl;
+	private MineLabel ml;
 	
 	private final int x;
 	private final int y;
@@ -42,6 +46,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	public GameFrame(int x, int y, int mine, int di, int sound) {
 		bcl = new ButtonClickListener();
 		check = new boolean[y][x];
+		rightClicked = new boolean[y][x];
 		clickedCnt = 0;
 		mineCnt = mine;
 		
@@ -68,6 +73,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		for(int i = 0; i < y; i++) {
 			for(int j = 0; j < x; j++) {
 				check[i][j] = false;
+				rightClicked[i][j] = false;
 			}
 		}
 		
@@ -233,7 +239,13 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		Font f1 = new Font("돋움", Font.BOLD, 15);
 		time.setFont(f1);
 
-		bLeft.setPreferredSize(new Dimension(50, 30));
+		ml = new MineLabel(stopwatch,this.mineCnt);
+		ml.start();
+		JLabel mineLabel = ml.getLabel();
+		mineLabel.setPreferredSize(new Dimension(50,30));
+		mineLabel.setHorizontalAlignment(JLabel.RIGHT);
+		mineLabel.setFont(f1);
+		
 		resetButton.setPreferredSize(new Dimension(30, 30));
 		time.setPreferredSize(new Dimension(50,30));
 		time.setHorizontalAlignment(JLabel.RIGHT);
@@ -242,7 +254,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		resetButton.addActionListener(bcl);
 		p3.add(resetButton);
 		
-		p1.add("West", bLeft);
+		p1.add("West", mineLabel);
 		p1.add("Center", p3);
 		p1.add("East",time);
 		
@@ -257,11 +269,49 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 				button[i][j] = new JButton();
 				JButton b = button[i][j];
 				b.setIcon(new ImageIcon("data/button.png"));
-				b.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						checkMine(e.getSource());
-						b.setEnabled(false);
-						b.setVisible(false);
+				b.addMouseListener(new MouseListener() {
+					@Override
+					public void mousePressed(MouseEvent me) {
+						// 내용 없음
+					}
+					@Override
+					public void mouseReleased(MouseEvent me) {
+						// 내용 없음
+					}
+					@Override
+					public void mouseEntered(MouseEvent me) {
+						// 내용 없음
+					}
+					@Override
+					public void mouseExited(MouseEvent me) {
+						// 내용 없음
+					}
+					
+					@Override
+					public void mouseClicked(MouseEvent me) {
+						if(me.getButton() == MouseEvent.BUTTON1) {
+							getIndex(me.getSource());
+							if(!rightClicked[yIdx][xIdx]) {
+								checkMine(me.getSource());
+								b.setEnabled(false);
+								b.setVisible(false);
+							}
+						}
+						if(me.getButton()==MouseEvent.BUTTON2) {
+							// 내용 없음
+						}
+						if(me.getButton()==MouseEvent.BUTTON3) {
+							getIndex(me.getSource());
+							if(!rightClicked[yIdx][xIdx]) {
+								rightClicked[yIdx][xIdx] = true;
+								b.setIcon(new ImageIcon("data/flag.png"));
+								ml.decMine();
+							} else {
+								rightClicked[yIdx][xIdx] = false;
+								b.setIcon(new ImageIcon("data/button.png"));
+								ml.incMine();
+							}
+						}
 					}
 				});
 				
@@ -443,6 +493,24 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 				else if (difficulty == 3 && Integer.parseInt(str[10]) > time) {
 					new GetBestNameFrame(time, difficulty);
 				}
+			}
+		}
+	}
+	
+	private void getIndex(Object o)
+	{
+		yIdx = -1;
+		xIdx = -1;
+		for(int i = 0; i < this.y; i++) {
+			for(int j = 0; j < this.x; j++) {
+				if(o.equals(button[i][j])) {
+					yIdx = i;
+					xIdx = j;
+					break;
+				}
+			}
+			if(yIdx != -1) {
+				break;
 			}
 		}
 	}
