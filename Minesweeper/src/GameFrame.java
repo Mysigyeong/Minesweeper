@@ -43,12 +43,16 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private Clip clip;
 	private boolean soundEnable;
 	
+	private boolean isGameOver;
+	
 	public GameFrame(int x, int y, int mine, int di, int sound) {
 		bcl = new ButtonClickListener();
 		check = new boolean[y][x];
 		rightClicked = new boolean[y][x];
 		clickedCnt = 0;
 		mineCnt = mine;
+		
+		isGameOver = false;
 		
 		this.x = x;
 		this.y = y;
@@ -228,7 +232,6 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		c.fill = GridBagConstraints.BOTH; //그리드백레이아웃 크기가 맞지 않을 경우 가로세로 확장
 		c.insets = new Insets(5, 5, 5, 5); //그리드백레이아웃 격자 간격조정
 		
-		JButton bLeft = new JButton("1");
 		resetButton = new JButton(new ImageIcon("data/yes.png"));
 		
 		stopwatch = new StopWatch(soundEnable);
@@ -239,7 +242,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		Font f1 = new Font("돋움", Font.BOLD, 15);
 		time.setFont(f1);
 
-		ml = new MineLabel(stopwatch,this.mineCnt);
+		ml = new MineLabel(stopwatch, this.mineCnt);
 		ml.start();
 		JLabel mineLabel = ml.getLabel();
 		mineLabel.setPreferredSize(new Dimension(50,30));
@@ -289,7 +292,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					
 					@Override
 					public void mouseClicked(MouseEvent me) {
-						if(me.getButton() == MouseEvent.BUTTON1) {
+						if(me.getButton() == MouseEvent.BUTTON1 && !isGameOver) {
 							getIndex(me.getSource());
 							if(!rightClicked[yIdx][xIdx]) {
 								checkMine(me.getSource());
@@ -297,10 +300,10 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 								b.setVisible(false);
 							}
 						}
-						if(me.getButton()==MouseEvent.BUTTON2) {
+						if(me.getButton() == MouseEvent.BUTTON2) {
 							// 내용 없음
 						}
-						if(me.getButton()==MouseEvent.BUTTON3) {
+						if(me.getButton() == MouseEvent.BUTTON3 && !isGameOver) {
 							getIndex(me.getSource());
 							if(!rightClicked[yIdx][xIdx]) {
 								rightClicked[yIdx][xIdx] = true;
@@ -315,7 +318,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					}
 				});
 				
-				icon = new ImageIcon("data/"+Integer.toString(xy[i][j])+".png");
+				icon = new ImageIcon("data/" + Integer.toString(xy[i][j]) + ".png");
 				ipanel = new ImagePanel(icon.getImage());
 				ipanel.setPreferredSize(new Dimension(20,20));
 				ipanel.setLayout(new GridLayout(1,1));
@@ -363,6 +366,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		if(xy[y][x] == -1) {
 			resetButton.setIcon(new ImageIcon("data/no.png"));
+			isGameOver = true;
 			
 			if (soundEnable) {
 				try {
@@ -443,6 +447,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		if(this.y * this.x - clickedCnt == mineCnt) {
 			resetButton.setIcon(new ImageIcon("data/yeah.png"));
 			stopwatch.Off();
+			isGameOver = true;
 			
 			if (soundEnable) {
 				try {

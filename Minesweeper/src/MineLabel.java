@@ -7,22 +7,26 @@ public class MineLabel implements Runnable {
 	private StopWatch sw;
 	
 	public MineLabel(StopWatch stp, int mineCnt) {
-		sw=stp;
-		remainedMine=mineCnt;
+		sw = stp;
+		remainedMine = mineCnt;
 		label = new JLabel();
 	}
 	
-	public void decMine() { remainedMine--; }
-	public void incMine() { remainedMine++; }
+	public void decMine() {
+		remainedMine--;
+	}
+	public void incMine() {
+		remainedMine++;
+	}
 	
 	public void run() {
 		try {
 			while(!sw.checkOn()) {
-				label.setText(Integer.toString(remainedMine)+"개");
+				label.setText(Integer.toString(remainedMine) + "개");
 				Thread.sleep(50);
 			}
 			while(sw.checkOn()) {
-				label.setText(Integer.toString(remainedMine)+"개");				
+				label.setText(Integer.toString(remainedMine) + "개");				
 				Thread.sleep(50);
 			}
 		}
