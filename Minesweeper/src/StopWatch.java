@@ -13,12 +13,27 @@ public class StopWatch implements Runnable
 	public int sec;
 	
 	private boolean soundEnable;
+	private AudioInputStream ais;
+	private Clip clip;
+	private File f;
 	
 	public StopWatch(boolean sound)
 	{
 		isOn = false;
 		sec = 0;
+		
 		soundEnable = sound;
+		f = new File("data/clock.wav");
+		
+		try {
+			ais = AudioSystem.getAudioInputStream(f);
+			clip = AudioSystem.getClip();
+			clip.open(ais);
+		}
+		catch (Exception e) {
+			e.getStackTrace();
+		}
+		
 	}
 	
 	public void On() {
@@ -52,15 +67,8 @@ public class StopWatch implements Runnable
 					nxtTime = curTime + 1000;
 					
 					if (soundEnable) {
-						try {
-							AudioInputStream ais = AudioSystem.getAudioInputStream(new File("data/clock.wav"));
-							Clip clip = AudioSystem.getClip();
-							clip.open(ais);
-							clip.start();
-						}
-						catch (Exception ex) {
-							ex.printStackTrace();
-						}
+						clip.setFramePosition(0);
+						clip.start();
 					}
 				}
 			}
