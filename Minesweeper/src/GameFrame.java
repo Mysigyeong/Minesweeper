@@ -43,7 +43,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private Clip clip;
 	private boolean soundEnable;
 	
-	private boolean isGameOver;
+	private boolean isGameOver, checkStart;
 	
 	public GameFrame(int x, int y, int mine, int di, int sound) {
 		bcl = new ButtonClickListener();
@@ -53,6 +53,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		mineCnt = mine;
 		
 		isGameOver = false;
+		checkStart = false;
 		
 		this.x = x;
 		this.y = y;
@@ -295,6 +296,10 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 						if(me.getButton() == MouseEvent.BUTTON1 && !isGameOver) {
 							getIndex(me.getSource());
 							if(!rightClicked[yIdx][xIdx]) {
+								if(!checkStart) {
+									stopwatch.On();
+									checkStart=true;
+								}
 								checkMine(me.getSource());
 								b.setEnabled(false);
 								b.setVisible(false);
@@ -306,10 +311,18 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 						if(me.getButton() == MouseEvent.BUTTON3 && !isGameOver) {
 							getIndex(me.getSource());
 							if(!rightClicked[yIdx][xIdx]) {
+								if(!checkStart) {
+									stopwatch.On();
+									checkStart=true;
+								}
 								rightClicked[yIdx][xIdx] = true;
 								b.setIcon(new ImageIcon("data/flag.png"));
 								ml.decMine();
 							} else {
+								if(!checkStart) {
+									stopwatch.On();
+									checkStart=true;
+								}
 								rightClicked[yIdx][xIdx] = false;
 								b.setIcon(new ImageIcon("data/button.png"));
 								ml.incMine();
@@ -347,9 +360,6 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		int x = -1;
 		
 		clickedCnt++;
-		if(clickedCnt == 1) {
-			stopwatch.On();
-		}
 		
 		for(int i = 0; i < this.y; i++) {
 			for(int j = 0; j < this.x; j++) {
@@ -369,15 +379,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			isGameOver = true;
 			
 			if (soundEnable) {
-				try {
-					ais = AudioSystem.getAudioInputStream(new File("data/lose.wav"));
-					clip = AudioSystem.getClip();
-					clip.open(ais);
-					clip.start();
-				}
-				catch (Exception ex) {
-					ex.printStackTrace();
-				}
+				clip.start();
 			}
 			
 			for(int i = 0; i < this.y; i++) {
@@ -385,13 +387,24 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 					button[i][j].setEnabled(false);
 					
 					if(xy[i][j] != -1) {
-						button[i][j].setIcon(new ImageIcon("data/button.png"));
-						button[i][j].setDisabledIcon(new ImageIcon("data/button.png"));
-						
-						continue;
+						if (rightClicked[i][j]) {
+							button[i][j].setIcon(new ImageIcon("data/wrong.png"));
+							button[i][j].setDisabledIcon(new ImageIcon("data/wrong.png"));
+						}
+						else {
+							button[i][j].setIcon(new ImageIcon("data/button.png"));
+							button[i][j].setDisabledIcon(new ImageIcon("data/button.png"));
+						}
 					}
-					
-					button[i][j].setVisible(false);
+					else {
+						if (rightClicked[i][j]) {
+							button[i][j].setIcon(new ImageIcon("data/flag.png"));
+							button[i][j].setDisabledIcon(new ImageIcon("data/flag.png"));
+						}
+						else {
+							button[i][j].setVisible(false);
+						}
+					}
 				}
 			}
 			stopwatch.Off();
@@ -412,14 +425,16 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		if(xy[y][x] == 0) {
 			do {
-				clickedCnt++;
 				f++;
 				
 				int i = queue[f][0];
 				int j = queue[f][1];
 				
-				button[i][j].setEnabled(false);
-				button[i][j].setVisible(false);
+				if(!rightClicked[i][j]) {
+					button[i][j].setEnabled(false);
+					button[i][j].setVisible(false);
+					clickedCnt++;
+				}
 				
 				if(xy[i][j] == 0) {
 					for(int k = 0; k < 8; k++) {

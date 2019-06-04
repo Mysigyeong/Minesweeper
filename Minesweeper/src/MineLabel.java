@@ -18,7 +18,7 @@ public class MineLabel implements Runnable {
 	public void incMine() {
 		remainedMine++;
 	}
-	
+		
 	public void run() {
 		try {
 			while(!sw.checkOn()) {
