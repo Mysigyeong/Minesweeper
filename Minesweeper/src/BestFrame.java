@@ -70,7 +70,9 @@ public class BestFrame extends JFrame { //최고기록 프레임
 		Image img = kit.getImage("data/icon.jpg"); //프레임창에 아이콘 넣기
 		setIconImage(img);
 		setTitle("최고기록");
-		setLocationRelativeTo(null); //화면 중앙에 띄우기
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(screenSize.width/3, screenSize.height/3);
 	}
 	
 	private class ButtonClickListener implements ActionListener {

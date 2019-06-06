@@ -35,6 +35,8 @@ public class HowToPlayFrame extends JFrame { //게임방법 프레임
 		Image img = kit.getImage("data/icon.jpg");
 		setIconImage(img);
 		setTitle("게임방법");
-		setLocationRelativeTo(null);
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(screenSize.width/3, screenSize.height/3);
 	}
 }

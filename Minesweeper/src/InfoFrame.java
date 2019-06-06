@@ -39,6 +39,8 @@ public class InfoFrame extends JFrame { //만든이 프레임
 		Image img = kit.getImage("data/icon.jpg");
 		setIconImage(img);
 		setTitle("만든이");
-		setLocationRelativeTo(null);
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(screenSize.width/3, screenSize.height/3);
 	}
 }

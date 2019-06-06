@@ -11,8 +11,12 @@ public class CustomFrame extends JFrame { //사용자지정 프레임
 	private int y = -1;
 	private int numOfMine = -1;
 	
+	private boolean inputException;
+	
 	public CustomFrame() {
 		makeFrame();
+		
+		inputException = false;
 		
 		JPanel p = new JPanel();
 		p.setLayout(new GridLayout(3, 3, 3, 3));
@@ -53,7 +57,9 @@ public class CustomFrame extends JFrame { //사용자지정 프레임
 		Image img = kit.getImage("data/icon.jpg");
 		setIconImage(img);
 		setTitle("사용자 지정");
-		setLocationRelativeTo(null);
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(screenSize.width/3, screenSize.height/3);
 	}
 	
 	private class ButtonClickListener implements ActionListener {
@@ -71,6 +77,7 @@ public class CustomFrame extends JFrame { //사용자지정 프레임
 					tempMine = Integer.parseInt(t3.getText());
 				}
 				catch (NumberFormatException ex) { //수가 아닌 문자가 들어왔을 경우 그냥 창을 닫는다.
+					inputException = true;
 					dispose();
 				}
 				
@@ -117,5 +124,9 @@ public class CustomFrame extends JFrame { //사용자지정 프레임
 	
 	public int getMine() {
 		return numOfMine;
+	}
+	
+	public boolean inputExcep() {
+		return inputException;
 	}
 }

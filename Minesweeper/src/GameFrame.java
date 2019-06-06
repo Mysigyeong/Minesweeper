@@ -145,7 +145,9 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		Image img = kit.getImage("data/icon.jpg"); //프레임 상단에 아이콘 넣기
 		setIconImage(img);
 		setTitle("지뢰찾기");
-		setLocationRelativeTo(null); //프레임의 초기위치를 화면 중앙으로 한다.
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(screenSize.width/3, screenSize.height/5);
 	}
 	private void makeMenuBar() { //메뉴바 만들기
 		JMenuBar mb = new JMenuBar();
@@ -182,7 +184,6 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		mb.add(menu);
 		mb.add(menu2);
-		mb.add(new JMenu("온라인"));
 		setJMenuBar(mb);
 	}
 	private void menuBarMouseAction(JMenuItem[] item) { //메뉴바의 각 버튼에 커맨드 입력
@@ -535,137 +536,63 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		}
 	}
 	
+	private void closeFrame(int x, int y, int mineCnt, int difficulty) {
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
+			
+			out.write(Integer.toString(x));
+			out.newLine();
+			out.write(Integer.toString(y));
+			out.newLine();
+			out.write(Integer.toString(mineCnt));
+			out.newLine();
+			out.write(Integer.toString(difficulty));
+			out.newLine();
+			
+			if (soundEnable) {
+				out.write("1");
+				out.newLine();
+			}
+			else {
+				out.write("0");
+				out.newLine();
+			}
+			
+			out.close();
+		}
+		catch (IOException ex) {
+			System.exit(1);
+		}
+
+		if (soundEnable && clip.isRunning()) {
+			clip.stop();
+		}
+		
+		try {
+			ais.close();
+			clip.close();
+		}
+		catch (Exception exc) {
+			exc.getStackTrace();
+		}
+		stopwatch.Off();
+		dispose();
+	}
 	private class ButtonClickListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
 			
 			if (command.equals("reset")) {
-				try {
-					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
-					
-					out.write(Integer.toString(x));
-					out.newLine();
-					out.write(Integer.toString(y));
-					out.newLine();
-					out.write(Integer.toString(mineCnt));
-					out.newLine();
-					out.write(Integer.toString(difficulty));
-					out.newLine();
-					
-					if (soundEnable) {
-						out.write("1");
-						out.newLine();
-					}
-					else {
-						out.write("0");
-						out.newLine();
-					}
-					
-					out.close();
-				}
-				catch (IOException ex) {
-					System.exit(1);
-				}
-
-				if (soundEnable && clip.isRunning()) {
-					clip.stop();
-				}
-
-				stopwatch.Off();
-				dispose();
+				closeFrame(x, y, mineCnt, difficulty);
 			}
 			else if (command.equals("beginner")) {
-				try {
-					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
-					
-					out.write("9");
-					out.newLine();
-					out.write("9");
-					out.newLine();
-					out.write("10");
-					out.newLine();
-					out.write("1");
-					out.newLine();
-					
-					if (soundEnable) {
-						out.write("1");
-						out.newLine();
-					}
-					else {
-						out.write("0");
-						out.newLine();
-					}
-					
-					out.close();
-				}
-				catch (IOException ex) {
-					System.exit(1);
-				}
-				
-				stopwatch.Off();
-				dispose();
+				closeFrame(9, 9, 10, 1);
 			}
 			else if (command.equals("intermediate")) {
-				try {
-					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
-					
-					out.write("16");
-					out.newLine();
-					out.write("16");
-					out.newLine();
-					out.write("40");
-					out.newLine();
-					out.write("2");
-					out.newLine();
-					
-					if (soundEnable) {
-						out.write("1");
-						out.newLine();
-					}
-					else {
-						out.write("0");
-						out.newLine();
-					}
-					
-					out.close();
-				}
-				catch (IOException ex) {
-					System.exit(1);
-				}
-				
-				stopwatch.Off();
-				dispose();
+				closeFrame(16, 16, 60, 2);
 			}
 			else if (command.equals("expert")) {
-				try {
-					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
-					
-					out.write("30");
-					out.newLine();
-					out.write("16");
-					out.newLine();
-					out.write("99");
-					out.newLine();
-					out.write("3");
-					out.newLine();
-					
-					if (soundEnable) {
-						out.write("1");
-						out.newLine();
-					}
-					else {
-						out.write("0");
-						out.newLine();
-					}
-					
-					out.close();
-				}
-				catch (IOException ex) {
-					System.exit(1);
-				}
-				
-				stopwatch.Off();
-				dispose();
+				closeFrame(30, 16, 99, 3);
 			}
 			else if (command.equals("custom")) {
 				cf = new CustomFrame();
@@ -690,37 +617,17 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private class WinEvent implements WindowListener {
 		@Override
 		public void windowClosed(WindowEvent e) { //창이 닫혔을 때
-			if (cf.getX() != -1) {
-				try {
-					BufferedWriter out = new BufferedWriter(new FileWriter("data/size.txt"));
-					
-					out.write(Integer.toString(cf.getX()));
-					out.newLine();
-					out.write(Integer.toString(cf.getY()));
-					out.newLine();
-					out.write(Integer.toString(cf.getMine()));
-					out.newLine();
-					out.write("4");
-					out.newLine();
-					
-					if (soundEnable) {
-						out.write("1");
-						out.newLine();
-					}
-					else {
-						out.write("0");
-						out.newLine();
-					}
-					
-					out.close();
+			if (cf.inputExcep()) {
+				closeFrame(x, y, mineCnt, difficulty);
+			}
+			else {
+				if (cf.getX() == -1) {
+					closeFrame(x, y, mineCnt, difficulty);
 				}
-				catch (IOException ex) {
-					System.exit(1);
+				else {
+					closeFrame(cf.getX(), cf.getY(), cf.getMine(), 4);
 				}
 			}
-			
-			stopwatch.Off();
-			dispose();
 		}
 
 		@Override
@@ -730,8 +637,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 
 		@Override
 		public void windowClosing(WindowEvent e) { //창닫기 버튼을 눌렀을 때
-			stopwatch.Off();
-			dispose();
+			closeFrame(x, y, mineCnt, difficulty);
 		}
 
 		@Override
