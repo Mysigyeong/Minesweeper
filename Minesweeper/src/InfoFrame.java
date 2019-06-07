@@ -18,7 +18,7 @@ public class InfoFrame extends JFrame { //만든이 프레임
 		JLabel l3 = new JLabel("우병수");
 		l3.setHorizontalAlignment(JLabel.CENTER);
 		JLabel l4 = new JLabel("<html><center>지뢰찾기 메뉴바 구현<br>"
-							+ "소리 출력 구현</html>");
+							+ "소리 출력, 서버 구현</html>");
 		l4.setHorizontalAlignment(JLabel.CENTER);
 		
 		p.add(l1);
