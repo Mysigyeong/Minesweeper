@@ -24,7 +24,7 @@ public class CustomFrame extends JFrame { //사용자지정 프레임
 		
 		JLabel l1 = new JLabel("가로(9 ~ 30)");
 		JLabel l2 = new JLabel("세로(9 ~ 24)");
-		JLabel l3 = new JLabel("지뢰(10 ~ 667)");
+		JLabel l3 = new JLabel("지뢰");
 		t1 = new JTextField(5);
 		t2 = new JTextField(5);
 		t3 = new JTextField(5);
@@ -98,8 +98,8 @@ public class CustomFrame extends JFrame { //사용자지정 프레임
 				if (tempMine < 10) {
 					tempMine = 10;
 				}
-				else if (tempMine > 667) {
-					tempMine = 667;
+				else if (tempMine > ((tempY - 1) * (tempX - 1))) {
+					tempMine = (tempY - 1) * (tempX - 1);
 				}
 				
 				x = tempX;
