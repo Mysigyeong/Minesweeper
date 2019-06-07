@@ -12,9 +12,12 @@
 /HowToPlayFrame.class
 /ImagePanel.class
 /InfoFrame.class
+/LadderFrame.class
 /MainFrameManager$WinEvent.class
 /MainFrameManager.class
+/MineClient.class
 /MineLabel.class
+/MineServer.class
 /PlayGame.class
 /StopWatch.class
 /TimeLabel.class

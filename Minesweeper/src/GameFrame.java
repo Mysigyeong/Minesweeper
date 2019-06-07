@@ -152,7 +152,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 	private void makeMenuBar() { //메뉴바 만들기
 		JMenuBar mb = new JMenuBar();
 		
-		JMenuItem[] item = new JMenuItem[9];
+		JMenuItem[] item = new JMenuItem[10];
 		item[0] = new JMenuItem("새 게임");
 		item[1] = new JMenuItem("초급");
 		item[2] = new JMenuItem("중급");
@@ -163,6 +163,8 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		item[7] = new JMenuItem("게임 방법");
 		item[8] = new JMenuItem("만든이");
+		
+		item[9] = new JMenuItem("세계기록");
 		
 		JMenu menu = new JMenu("게임");
 		menu.add(item[0]);
@@ -175,6 +177,7 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		menu.add(item[5]);
 		menu.addSeparator();
 		menu.add(item[6]);
+		menu.add(item[9]);
 		
 		JMenu menu2 = new JMenu("도움말");
 		menu2.add(item[7]);
@@ -214,6 +217,10 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 		
 		item[8].setActionCommand("maker");
 		item[8].addActionListener(bcl);
+		
+		item[9].setActionCommand("ladder");
+		item[9].addActionListener(bcl);
+		
 	}
 	private void makeBoard() {
 		GridBagConstraints c = new GridBagConstraints();
@@ -604,6 +611,16 @@ public class GameFrame extends JFrame {	//게임을 하는 메인프레임
 			}
 			else if (command.equals("best")) {
 				new BestFrame();
+			}
+			else if (command.equals("ladder")) {
+				MineClient mc = new MineClient(1, "read", -1);
+				
+				if (mc.isConnected()) {
+					new LadderFrame(mc.getData());
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "서버와 연결이 되어있지 않습니다.");
+				}
 			}
 			else if (command.equals("how")) {
 				new HowToPlayFrame();

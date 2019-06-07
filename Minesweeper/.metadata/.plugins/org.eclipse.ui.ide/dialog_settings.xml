@@ -2,9 +2,10 @@
 <section name="Workbench">
 	<section name="ExternalProjectImportWizard">
 		<item value="false" key="WizardProjectsImportPage.STORE_NESTED_PROJECTS"/>
-		<item value="true" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
+		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
 		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
 		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="C:\Users\woo_kh\Desktop\Minesweeper"/>
 			<item value="D:\2019년 1학기\JAVA프로그래밍실습\JavaProject-master\JavaProject-master\Minesweeper"/>
 			<item value="D:\2019년 1학기\JAVA프로그래밍실습\JavaProject-master\JavaProject-master"/>
 		</list>

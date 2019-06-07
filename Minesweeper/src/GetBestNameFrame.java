@@ -79,6 +79,8 @@ public class GetBestNameFrame extends JFrame{
 					System.exit(1);
 				}
 				
+				new MineClient(difficulty, t.getText(), time);
+				
 				dispose();
 				new BestFrame();
 			}
