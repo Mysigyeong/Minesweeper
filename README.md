@@ -13,13 +13,13 @@
 3.3. `General` 폴더를 클릭합니다.<br>
 3.4. `Existing Projects into Workspace`를 클릭합니다.<br>
 3.5. Select root directory 오른쪽에 있는 `Browse...`버튼을 클릭합니다.<br>
-3.6. 이 프로젝트를 다운 받은 경로를 입력해주세요.<br>
-3.7. Projects 칸 아래에 Minesweeper프로젝트가 제대로 떴으면 `Finish`버튼을 눌러 import를 완료하세요.<br>
+3.6. 이 프로젝트의 경로를 입력합니다.<br>
+3.7. Projects 칸 아래에 `Minesweeper`프로젝트가 제대로 떴으면 `Finish`버튼을 눌러 import를 완료합니다.<br>
 
-4. `PlayGame.java`를 클릭하시고 `Run`키를 누르시거나 단축키`Ctrl + F11`를 누르셔서 실행하세요.
-5. 즐기세요.
+4. `PlayGame.java`를 클릭하시고 `Run`키를 누르거나 단축키`Ctrl + F11`를 눌러서 실행합니다.
+5. 즐깁니다.
 
 6. 지뢰찾기 실행 후 메뉴바 속 `게임`메뉴에 있는 `세계기록` 탭을 보고 싶고, 여기에 기록을 남기고 싶다면<br>
-`MineServer.java`를 선택하고 실행해주세요.
-7. 콘솔창에 `MineServer`의 상태를 확인하면서 세계기록과 자신의 신기록이 올라가는 모습을 보실 수 있습니다.
-8. 마지막으로 다시한번 당부드리는데 `즐기세요`.
+`MineServer.java`를 선택하고 실행합니다.
+7. 콘솔창에 `MineServer`의 상태를 확인하면서 세계기록과 자신의 신기록이 올라가는 모습을 볼 수 있습니다.
+8. `즐깁니다`.
