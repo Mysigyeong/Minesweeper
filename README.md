@@ -15,6 +15,7 @@
 3.5. Select root directory 오른쪽에 있는 `Browse...`버튼을 클릭합니다.<br>
 3.6. 이 프로젝트의 경로를 입력합니다.<br>
 3.7. Projects 칸 아래에 `Minesweeper`프로젝트가 제대로 떴으면 `Finish`버튼을 눌러 import를 완료합니다.<br>
+__**주의 : 프로젝트의 경로와 WorkSpace의 경로가 일치 할 경우, 충돌이 발생하므로 둘의 경로는 달라야 합니다.**__
 
 4. `PlayGame.java`를 클릭하시고 `Run`키를 누르거나 단축키`Ctrl + F11`를 눌러서 실행합니다.
 5. 즐깁니다.
